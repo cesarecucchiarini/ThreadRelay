@@ -4,6 +4,7 @@
  */
 package threadrelay;
 
+import java.awt.GridLayout;
 import javax.swing.*;
 
 /**
@@ -12,4 +13,19 @@ import javax.swing.*;
  */
 public class FormAtleti extends JFrame{
     
+    public FormAtleti(){
+        GestoreAtleti ga = new GestoreAtleti();
+        GestoreGrafica gg = new GestoreGrafica(ga.getAtleti());
+        
+        this.setLayout(new GridLayout(4, 4));
+        for(JProgressBar barra : gg.getBars()){
+            this.add(barra);
+            this.add(new JLabel("Atleta"));
+        }
+        
+        this.setVisible(true);
+        this.setSize(new java.awt.Dimension(500, 500));
+        
+        ga.start();
+    }
 }

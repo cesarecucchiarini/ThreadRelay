@@ -27,10 +27,14 @@ public class Atleta extends Thread{
     }
     
     @Override
-    public void run(){
+    public void run(){     
         for(percorso = 0; percorso < 100; percorso++){
             try{
-                Thread.sleep(tempo);                
+                System.out.println(percorso +"");
+                Thread.sleep(tempo);
+                synchronized(this){
+                    this.notifyAll();
+                }
             }
             catch(Exception e){}
         }

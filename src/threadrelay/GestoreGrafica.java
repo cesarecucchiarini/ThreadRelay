@@ -4,6 +4,7 @@
  */
 package threadrelay;
 
+import java.util.LinkedHashMap;
 import javax.swing.*;
 
 /**
@@ -11,10 +12,33 @@ import javax.swing.*;
  * @author cucchiarini.cesare
  */
 public class GestoreGrafica {
-    JProgressBar[] bars;
+    LinkedHashMap<Atleta, JProgressBar> bars = new LinkedHashMap<>();
     
-    public void setBars(JProgressBar[] bars){
-        this.bars = bars;
+    public GestoreGrafica(Atleta[] atleti){
+        for(Atleta a : atleti){
+            JProgressBar barra = new JProgressBar();
+            bars.put(a, barra);
+            
+            new Thread(() -> {               
+                    while(a.getPercorso() != 100){
+                        try {
+                            synchronized(a){
+                                a.wait();
+                            }
+                            SwingUtilities.invokeLater(() -> {
+                                barra.setValue(a.getPercorso());
+                            });
+                        } 
+                        catch (InterruptedException ex) {
+                            System.getLogger(GestoreGrafica.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                        }
+                    }
+            }).start();
+        }
+    }
+    
+    public JProgressBar[] getBars(){
+        return bars.values().toArray(JProgressBar[]::new);
     }
     
     
