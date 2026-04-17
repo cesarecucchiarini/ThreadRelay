@@ -18,7 +18,17 @@ public class GestoreGrafica {
         for(Atleta a : atleti){
             JProgressBar barra = new JProgressBar();
             bars.put(a, barra);
-            
+        }
+    }
+    
+    public JProgressBar[] getBars(){
+        return bars.values().toArray(JProgressBar[]::new);
+    }
+    
+    public void startThreads(){
+        for(Atleta a : bars.keySet()){
+            JProgressBar barra = bars.get(a);
+            barra.setValue(0);
             new Thread(() -> {               
                     while(a.getPercorso() != 100){
                         try {
@@ -36,10 +46,4 @@ public class GestoreGrafica {
             }).start();
         }
     }
-    
-    public JProgressBar[] getBars(){
-        return bars.values().toArray(JProgressBar[]::new);
-    }
-    
-    
 }

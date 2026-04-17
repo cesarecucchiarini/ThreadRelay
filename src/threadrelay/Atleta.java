@@ -8,14 +8,14 @@ package threadrelay;
  *
  * @author cucchiarini.cesare
  */
-public class Atleta extends Thread{
+public class Atleta implements Runnable{
     private volatile int percorso;
     private int tempo;
     
     public Atleta(){
         super();
         percorso = 0;
-        tempo = 100;
+        tempo = 10;
     }
     
     public int getPercorso(){
@@ -30,7 +30,6 @@ public class Atleta extends Thread{
     public void run(){     
         for(percorso = 0; percorso < 100; percorso++){
             try{
-                System.out.println(percorso +"");
                 Thread.sleep(tempo);
                 synchronized(this){
                     this.notifyAll();

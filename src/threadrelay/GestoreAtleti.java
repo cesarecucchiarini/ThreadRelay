@@ -8,7 +8,7 @@ package threadrelay;
  *
  * @author cucchiarini.cesare
  */
-public class GestoreAtleti extends Thread{
+public class GestoreAtleti implements Runnable{
     private Atleta[] atleti = new Atleta[4];
     
     public GestoreAtleti(){
@@ -21,17 +21,26 @@ public class GestoreAtleti extends Thread{
     public void run(){
         for(int i = 0; i < 4; i++){
             final Atleta atleta = atleti[i];            
-            atleta.start();
+            new Thread(atleta).start();
             try {
                 while(atleta.getPercorso() != 90){
                     synchronized(atleta){
                         atleta.wait();
                     }
-                    System.out.println("sto aspettando "+atleta.getPercorso());
                 }
             } catch (InterruptedException ex) {
                 System.getLogger(GestoreAtleti.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
+            if(i == 3)
+                while(atleta.getPercorso() != 100){
+                    try{
+                        atleta.wait();
+                    }
+                    catch(Exception e){}
+                }
+        }
+        synchronized(this){
+            this.notify();
         }
     }
     

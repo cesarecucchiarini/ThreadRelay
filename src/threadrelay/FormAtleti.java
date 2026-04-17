@@ -4,7 +4,10 @@
  */
 package threadrelay;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 /**
@@ -17,15 +20,38 @@ public class FormAtleti extends JFrame{
         GestoreAtleti ga = new GestoreAtleti();
         GestoreGrafica gg = new GestoreGrafica(ga.getAtleti());
         
-        this.setLayout(new GridLayout(4, 4));
+        JPanel panelBarre = new JPanel();
+        panelBarre.setLayout(new GridLayout(4, 4));
         for(JProgressBar barra : gg.getBars()){
-            this.add(barra);
-            this.add(new JLabel("Atleta"));
+            panelBarre.add(barra);
+            panelBarre.add(barra);
+            panelBarre.add(barra);
+            panelBarre.add(new JLabel("Atleta"));
         }
+        this.add(panelBarre, BorderLayout.CENTER);
+        
+        JButton bottoneAvvio = new JButton("Start");
+        bottoneAvvio.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                new Thread(ga).start();
+                gg.startThreads();
+                new Thread(()->{
+                    bottoneAvvio.setEnabled(false);
+                synchronized(ga){
+                    try {
+                        ga.wait();
+                    } catch (InterruptedException ex) {
+                        System.getLogger(FormAtleti.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                    }
+                }
+                bottoneAvvio.setEnabled(true);
+                }).start();                
+            }
+        });
+        this.add(bottoneAvvio, BorderLayout.SOUTH);
         
         this.setVisible(true);
         this.setSize(new java.awt.Dimension(500, 500));
-        
-        ga.start();
     }
 }
