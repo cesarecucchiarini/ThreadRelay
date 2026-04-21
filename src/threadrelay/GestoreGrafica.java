@@ -12,13 +12,15 @@ import javax.swing.*;
  * @author cucchiarini.cesare
  */
 public class GestoreGrafica {
-    LinkedHashMap<Atleta, JProgressBar> bars = new LinkedHashMap<>();
+    private LinkedHashMap<Atleta, JProgressBar> bars = new LinkedHashMap<>();
+    private BoxGara gara;
     
-    public GestoreGrafica(Atleta[] atleti){
+    public GestoreGrafica(Atleta[] atleti, BoxGara gara){
         for(Atleta a : atleti){
             JProgressBar barra = new JProgressBar();
             bars.put(a, barra);
         }
+        this.gara = gara;
     }
     
     public JProgressBar[] getBars(){
@@ -29,8 +31,8 @@ public class GestoreGrafica {
         for(Atleta a : bars.keySet()){
             JProgressBar barra = bars.get(a);
             barra.setValue(0);
-            new Thread(() -> {               
-                    while(a.getPercorso() != 100){
+            new Thread(() -> {              
+                    while(a.getPercorso() != 100 && gara.getGara()){
                         try {
                             synchronized(a){
                                 a.wait();
@@ -38,12 +40,18 @@ public class GestoreGrafica {
                             SwingUtilities.invokeLater(() -> {
                                 barra.setValue(a.getPercorso());
                             });
-                        } 
+                        }
                         catch (InterruptedException ex) {
                             System.getLogger(GestoreGrafica.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                         }
                     }
             }).start();
+        }
+    }
+    
+    public void pulisciBarre(){
+        for(JProgressBar barra : bars.values()){
+            barra.setValue(0);
         }
     }
 }

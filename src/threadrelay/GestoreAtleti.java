@@ -10,34 +10,57 @@ package threadrelay;
  */
 public class GestoreAtleti implements Runnable{
     private Atleta[] atleti = new Atleta[4];
+    private BoxGara gara;
     
     public GestoreAtleti(){
+        gara = new BoxGara();
         for(int i = 0; i < 4; i++){
-            atleti[i] = new Atleta();
+            atleti[i] = new Atleta(gara);
         }
+    }
+    
+    public void azzeraAtleti(){
+        for(Atleta a : atleti){
+            a.setPercorso(0);
+        }
+    }
+    
+    public void fermaGara(){
+        gara.setGara(false);
+    }
+    
+    public Boolean getGara(){
+        return gara.getGara();
+    }
+    
+    public BoxGara getBoxGara(){
+        return gara;
     }
     
     @Override
     public void run(){
-        for(int i = 0; i < 4; i++){
-            final Atleta atleta = atleti[i];            
+        gara.setGara(true);
+        for(int i = 0; i < 4 && gara.getGara(); i++){
+            final Atleta atleta = atleti[i];          
             new Thread(atleta).start();
             try {
-                while(atleta.getPercorso() != 90){
+                while(atleta.getPercorso() != 90 && gara.getGara()){
                     synchronized(atleta){
                         atleta.wait();
                     }
                 }
-            } catch (InterruptedException ex) {
-                System.getLogger(GestoreAtleti.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            }
-            if(i == 3)
-                while(atleta.getPercorso() != 100){
+            } catch (InterruptedException ex) {}
+            
+            if(i == 3){
+                while(atleta.getPercorso() != 100 && gara.getGara()){
                     try{
-                        atleta.wait();
+                        synchronized(atleta){
+                            atleta.wait();
+                        }
                     }
                     catch(Exception e){}
                 }
+            }
         }
         synchronized(this){
             this.notify();
