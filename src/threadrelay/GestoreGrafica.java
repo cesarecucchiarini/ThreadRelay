@@ -13,18 +13,20 @@ import javax.swing.SwingUtilities;
  */
 public class GestoreGrafica implements Observer{
     private ArrayList<Atleta> atleti = new ArrayList<>();
+    private FormAtleti formAtleti;
     
-    public GestoreGrafica(ArrayList<Atleta> atleti){
+    public GestoreGrafica(ArrayList<Atleta> atleti, GestoreAtleti gestoreAtleti){
         for(Atleta a : atleti){
             a.addObserver(this);
             this.atleti.add(a);
         }
+        formAtleti = new FormAtleti(atleti.size(), gestoreAtleti);
     }
     
     @Override
     public synchronized void update(Atleta atleta){
         SwingUtilities.invokeLater(()->{
-            System.out.println("Atleta "+ atleti.indexOf(atleta) + " ha percorso " + atleta.getDistanzaPercorsa());
+            formAtleti.aggiornaBarra(atleti.indexOf(atleta), atleta.getDistanzaPercorsa());
         });
     }
 }

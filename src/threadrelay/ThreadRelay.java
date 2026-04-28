@@ -14,8 +14,7 @@ public class ThreadRelay {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        GestoreAtleti ga = new GestoreAtleti(4, 10);
-        ga.cominciaGara();
+        new GestoreAtleti(4, 10);
     }
     
 }
