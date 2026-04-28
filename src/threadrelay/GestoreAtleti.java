@@ -15,9 +15,9 @@ public class GestoreAtleti implements Observer{
     private GestoreGrafica gestoreGrafica;
     private boolean garaIniziata = false;
     
-    public GestoreAtleti(int numeroAtleti, int velocita){       
+    public GestoreAtleti(int numeroAtleti){       
         for(; numeroAtleti > 0; numeroAtleti--){
-            Atleta a = new Atleta(velocita);
+            Atleta a = new Atleta(0);
             a.addObserver(this);
             atleti.add(a);
         }
