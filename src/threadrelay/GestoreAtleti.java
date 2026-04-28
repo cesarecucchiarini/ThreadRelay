@@ -12,18 +12,24 @@ import java.util.ArrayList;
  */
 public class GestoreAtleti implements Observer{
     private ArrayList<Atleta> atleti = new ArrayList<>();
-    private int 
+    private GestoreGrafica gestoreGrafica;
     
-    public GestoreAtleti(int numeroAtleti, int velocita){
+    public GestoreAtleti(int numeroAtleti, int velocita){       
         for(; numeroAtleti > 0; numeroAtleti--){
             Atleta a = new Atleta(velocita);
             a.addObserver(this);
             atleti.add(a);
         }
+        gestoreGrafica = new GestoreGrafica(atleti);
+    }
+    
+    public void cominciaGara(){
+        new Thread(atleti.get(0)).start();
     }
     
     @Override
-    public void update(int distanzaPercorsa){
-        System.out.println()
+    public synchronized void update(Atleta atleta){
+        if(atleta.getDistanzaPercorsa() == 90 && atleti.indexOf(atleta) != atleti.size()-1)
+            new Thread(atleti.get(atleti.indexOf(atleta) + 1)).start();
     }
 }

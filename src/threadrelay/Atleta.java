@@ -35,7 +35,7 @@ public class Atleta implements Subject, Runnable{
     public void notifyObservers(){
         List<Observer> copia = List.copyOf(observers);
         for(Observer observer : copia){
-            observer.update(distanzaPercorsa);
+            observer.update(this);
         }
     }
 
@@ -48,9 +48,13 @@ public class Atleta implements Subject, Runnable{
         this.velocita = velocita;
     }
     
+    public int getDistanzaPercorsa(){
+        return distanzaPercorsa;
+    }
+    
     @Override 
     public void run(){
-        for(; distanzaPercorsa <= 100; distanzaPercorsa++){
+        while(distanzaPercorsa < 100){
             try {
                 Thread.sleep(velocita);
                 setDistanzaPercorsa(distanzaPercorsa + 1);

@@ -9,5 +9,5 @@ package threadrelay;
  * @author cucchiarini.cesare
  */
 public interface Observer {
-    public void update(int distanza);
+    public void update(Atleta atleta);
 }
