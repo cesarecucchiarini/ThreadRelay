@@ -22,6 +22,10 @@ public class FormAtleti extends JFrame{
     private static final Color COLORE_SFONDO = new Color(245, 247, 250);
     private static final Color COLORE_ACCENTO = new Color(41, 121, 255);
     ArrayList<JProgressBar> barre = new ArrayList<JProgressBar>();
+    private JButton bottoneAvvia;
+    private JButton bottoneFerma;
+    private JButton bottoneSospendi;
+    private JButton bottoneRiprendi;
     
     public FormAtleti(int numeroAtleti, GestoreAtleti gestoreAtleti){
         for(; numeroAtleti > 0; numeroAtleti--){
@@ -61,25 +65,64 @@ public class FormAtleti extends JFrame{
 
         JComboBox<String> comboVelocita = new JComboBox<>(new String[]{"veloce", "medio", "lento"});
         comboVelocita.setSelectedItem("medio");
-        comboVelocita.setFont(comboVelocita.getFont().deriveFont(Font.PLAIN, 17f));
-        comboVelocita.setPreferredSize(new Dimension(170, 44));
+        comboVelocita.setFont(comboVelocita.getFont().deriveFont(Font.BOLD, 22f));
+        comboVelocita.setPreferredSize(new Dimension(260, 64));
         gestoreAtleti.impostaVelocita(mappaVelocita((String) comboVelocita.getSelectedItem()));
         
-        JButton bottoneComincia = new JButton("Comincia gara");
-        bottoneComincia.setFont(bottoneComincia.getFont().deriveFont(Font.BOLD, 22f));
-        bottoneComincia.setPreferredSize(new Dimension(260, 64));
-        bottoneComincia.addActionListener(e -> {
-                if(gestoreAtleti.getGaraIniziata())
-                    return;
+        bottoneAvvia = new JButton("Avvia");
+        bottoneAvvia.setFont(bottoneAvvia.getFont().deriveFont(Font.BOLD, 22f));
+        bottoneAvvia.setPreferredSize(new Dimension(260, 64));
+        bottoneAvvia.addActionListener(e -> {
+                comboVelocita.setEnabled(false);
+                bottoneAvvia.setEnabled(false);
+                bottoneFerma.setEnabled(true);
+                bottoneSospendi.setEnabled(true);
                 gestoreAtleti.impostaVelocita(mappaVelocita((String) comboVelocita.getSelectedItem()));
                 gestoreAtleti.cominciaGara();
             });
+        
+        bottoneFerma = new JButton("Ferma");
+        bottoneFerma.setFont(bottoneFerma.getFont().deriveFont(Font.BOLD, 22f));
+        bottoneFerma.setPreferredSize(new Dimension(260, 64));
+        bottoneFerma.addActionListener(e -> {
+                comboVelocita.setEnabled(true);
+                bottoneFerma.setEnabled(false);
+                bottoneSospendi.setEnabled(false);
+                bottoneRiprendi.setEnabled(false);
+                bottoneAvvia.setEnabled(true);
+                gestoreAtleti.fermaGara();
+            });
+        bottoneFerma.setEnabled(false);
+        
+        bottoneSospendi = new JButton("Sospendi");
+        bottoneSospendi.setFont(bottoneSospendi.getFont().deriveFont(Font.BOLD, 22f));
+        bottoneSospendi.setPreferredSize(new Dimension(260, 64));
+        bottoneSospendi.addActionListener(e -> {
+                bottoneSospendi.setEnabled(false);
+                bottoneRiprendi.setEnabled(true);
+                gestoreAtleti.bloccaGara();
+            });
+        bottoneSospendi.setEnabled(false);
+        
+        bottoneRiprendi = new JButton("Riprendi");
+        bottoneRiprendi.setFont(bottoneRiprendi.getFont().deriveFont(Font.BOLD, 22f));
+        bottoneRiprendi.setPreferredSize(new Dimension(260, 64));
+        bottoneRiprendi.addActionListener(e -> {
+                bottoneRiprendi.setEnabled(false);
+                bottoneFerma.setEnabled(true);
+                bottoneSospendi.setEnabled(true);
+                gestoreAtleti.riprendiGara();
+            });
+        bottoneRiprendi.setEnabled(false);
         
         JPanel pannelloBottone = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 8));
         pannelloBottone.setBackground(COLORE_SFONDO);
         pannelloBottone.setBorder(new EmptyBorder(12, 16, 20, 16));
         pannelloBottone.add(comboVelocita);
-        pannelloBottone.add(bottoneComincia);
+        pannelloBottone.add(bottoneAvvia);
+        pannelloBottone.add(bottoneFerma);
+        pannelloBottone.add(bottoneSospendi);
+        pannelloBottone.add(bottoneRiprendi);
         this.add(pannelloBottone, BorderLayout.SOUTH);
         
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,7 +134,7 @@ public class FormAtleti extends JFrame{
         barre.get(index).setValue(valore);
     }
     
-    private int mappaVelocita(String etichetta){
+    public int mappaVelocita(String etichetta){
         switch (etichetta){
             case "veloce":
                 return 10;

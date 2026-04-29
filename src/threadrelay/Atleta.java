@@ -15,6 +15,7 @@ public class Atleta implements Subject, Runnable{
     private ArrayList<Observer> observers = new ArrayList<>();
     private int distanzaPercorsa;
     private int velocita;
+    private boolean staCorrendo;
 
     public Atleta(int velocita) {
         this.distanzaPercorsa = 0;
@@ -52,12 +53,18 @@ public class Atleta implements Subject, Runnable{
         return distanzaPercorsa;
     }
     
-    @Override 
+    public void ferma(){
+        staCorrendo = false;
+    }
+    
+    @Override
     public void run(){
-        while(distanzaPercorsa < 100){
+        staCorrendo = true;
+        while(staCorrendo && distanzaPercorsa < 100){
             try {
                 Thread.sleep(velocita);
-                setDistanzaPercorsa(distanzaPercorsa + 1);
+                if(staCorrendo)
+                    setDistanzaPercorsa(distanzaPercorsa + 1);
             } catch (InterruptedException ex) {
                 System.getLogger(Atleta.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }

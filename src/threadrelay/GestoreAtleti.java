@@ -30,9 +30,6 @@ public class GestoreAtleti implements Observer{
     }
     
     public synchronized void cominciaGara(){
-        for(Atleta a : atleti){
-            a.setDistanzaPercorsa(0);
-        }
         counter = 0;
         garaIniziata = true;
         new Thread(atleti.get(counter++)).start();
@@ -48,8 +45,29 @@ public class GestoreAtleti implements Observer{
     public synchronized void update(Atleta atleta){
         if(atleta.getDistanzaPercorsa() == 90 && counter != atleti.size())
             new Thread(atleti.get(counter++)).start();
-        
-        else if(atleta.getDistanzaPercorsa() == 100 && counter == atleti.size())
-            garaIniziata = false;
+    }
+    
+    public synchronized void bloccaGara(){
+        for(Atleta a : atleti){
+            a.ferma();
+        }
+    }
+    
+    public synchronized void riprendiGara(){
+        counter = 0;
+        Atleta a = atleti.get(counter++);
+        while(a.getDistanzaPercorsa() == 100){
+            a = atleti.get(counter++);
+        }
+        new Thread(a).start();
+        if(a.getDistanzaPercorsa() >= 90 && counter < atleti.size())
+            new Thread(atleti.get(counter++)).start();
+    }
+    
+    public synchronized void fermaGara(){
+        for(Atleta a : atleti){
+            a.ferma();
+            a.setDistanzaPercorsa(0);
+        }
     }
 }
