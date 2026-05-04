@@ -56,7 +56,7 @@ public class GestoreAtleti implements Observer{
     public synchronized void riprendiGara(){
         counter = 0;
         Atleta a = atleti.get(counter++);
-        while(a.getDistanzaPercorsa() == 100){
+        while(a.getDistanzaPercorsa() == 100 && counter < atleti.size()){
             a = atleti.get(counter++);
         }
         new Thread(a).start();

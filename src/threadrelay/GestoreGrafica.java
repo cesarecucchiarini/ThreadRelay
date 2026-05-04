@@ -27,6 +27,8 @@ public class GestoreGrafica implements Observer{
     public synchronized void update(Atleta atleta){
         SwingUtilities.invokeLater(()->{
             formAtleti.aggiornaBarra(atleti.indexOf(atleta), atleta.getDistanzaPercorsa());
+            if(atleta.equals(atleti.getLast()) && atleta.getDistanzaPercorsa() == 100)
+                formAtleti.garaFinita();
         });
     }
 }

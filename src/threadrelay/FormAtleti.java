@@ -144,4 +144,8 @@ public class FormAtleti extends JFrame{
                 return 25;
         }
     }
+    
+    public void garaFinita(){
+        bottoneSospendi.setEnabled(false);
+    }
 }
