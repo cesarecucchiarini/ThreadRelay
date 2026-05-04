@@ -1,0 +1,86 @@
+---
+    config:
+        layout: elk
+---
+
+classDiagram
+direction TB
+
+class ThreadRelay {
+  +main(args: String[]) void
+}
+
+class Subject {
+  <<interface>>
+  +addObserver(observer: Observer) void
+  +removeObserver(observer: Observer) void
+  +notifyObservers() void
+}
+
+class Observer {
+  <<interface>>
+  +update(atleta: Atleta) void
+}
+
+class Atleta {
+  -observers: ArrayList~Observer~
+  -distanzaPercorsa: int
+  -velocita: int
+  -staCorrendo: boolean
+  +Atleta(velocita: int)
+  +addObserver(observer: Observer) void
+  +removeObserver(observer: Observer) void
+  +notifyObservers() void
+  +setDistanzaPercorsa(distanzaPercorsa: int) void
+  +setVelocita(velocita: int) void
+  +getDistanzaPercorsa() int
+  +ferma() void
+  +run() void
+}
+
+class GestoreAtleti {
+  -atleti: ArrayList~Atleta~
+  -gestoreGrafica: GestoreGrafica
+  -counter: int
+  -garaIniziata: boolean
+  +GestoreAtleti(numeroAtleti: int)
+  +getGaraIniziata() boolean
+  +cominciaGara() void
+  +impostaVelocita(velocita: int) void
+  +update(atleta: Atleta) void
+  +bloccaGara() void
+  +riprendiGara() void
+  +fermaGara() void
+}
+
+class GestoreGrafica {
+  -atleti: ArrayList~Atleta~
+  -formAtleti: FormAtleti
+  +GestoreGrafica(atleti: ArrayList~Atleta~, gestoreAtleti: GestoreAtleti)
+  +update(atleta: Atleta) void
+}
+
+class FormAtleti {
+  -barre: ArrayList~JProgressBar~
+  -bottoneAvvia: JButton
+  -bottoneFerma: JButton
+  -bottoneSospendi: JButton
+  -bottoneRiprendi: JButton
+  +FormAtleti(numeroAtleti: int, gestoreAtleti: GestoreAtleti)
+  +aggiornaBarra(index: int, valore: int) void
+  +mappaVelocita(etichetta: String) int
+}
+
+Atleta ..|> Subject
+Atleta ..|> Runnable
+GestoreAtleti ..|> Observer
+GestoreGrafica ..|> Observer
+FormAtleti --|> JFrame
+
+ThreadRelay --> GestoreAtleti : crea
+GestoreAtleti "1" *-- "*" Atleta : gestisce
+GestoreAtleti --> GestoreGrafica : usa
+GestoreGrafica --> FormAtleti : aggiorna UI
+GestoreGrafica --> Atleta : osserva
+GestoreAtleti --> Atleta : osserva
+Atleta --> Observer : notifica
